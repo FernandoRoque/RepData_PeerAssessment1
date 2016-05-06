@@ -91,7 +91,7 @@ rug(act_stat$sum)
 
 Now, we calculate the mean and median of the total number of steps per day.
 
-```{r}
+```{r, echo=TRUE}
 mean(act_stat$sum)
 median(act_stat$sum)
 ```
