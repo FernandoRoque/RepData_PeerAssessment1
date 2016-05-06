@@ -86,6 +86,9 @@ hist(act_stat$sum, nclass=15, col="lightskyblue", main="Total number of steps pe
 rug(act_stat$sum)
 ```
 
+!(figure/hist1.png) 
+
+
 Now, we calculate the mean and median of the total number of steps per day.
 
 ```{r, echo = TRUE}
