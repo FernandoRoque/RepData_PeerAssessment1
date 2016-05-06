@@ -86,6 +86,9 @@ hist(act_stat$sum, nclass=15, col="lightskyblue", main="Total number of steps pe
 rug(act_stat$sum)
 ```
 
+![plot of chunk unnamed-chunk-4](instructions_fig/hist1.png) 
+
+
 Now, we calculate the mean and median of the total number of steps per day.
 
 ```{r}
@@ -104,6 +107,8 @@ Firts question will be aswered by calculate a new summary table
 act_stat_mean <- act1 %>% group_by(interval) %>% summarize(mean=mean(steps))
 plot(act_stat_mean$interval, act_stat_mean$mean, type="l", col="darkblue", lwd=2)
 ```
+![plot of chunk unnamed-chunk-4](instructions_fig/plot.png) 
+
 
 The maximun number of step is calculated as follow:
 
@@ -150,6 +155,9 @@ rug(act_imp_sum$sum)
 
 ```
 
+![plot of chunk unnamed-chunk-4](instructions_fig/hist2.png) 
+
+
 Finally, we calculate the mean and median of the data with imputed data
 
 ```{r}
@@ -188,5 +196,7 @@ library(lattice)
 xyplot(sum ~ interval | wd, act_wd_sm, type = "l", layout = c(1, 2), xlab = "Interval", ylab = "Number of steps")
 
 ```
+![plot of chunk unnamed-chunk-4](instructions_fig/plot2.png) 
+
 
 
