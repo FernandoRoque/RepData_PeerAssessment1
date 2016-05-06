@@ -31,7 +31,7 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
 Once we have dowloaded data from the web, the first step is loading data into workspace. We are using `read.csv()` function. 
 
-```{r}
+```{r, echo = TRUE}
 setwd("C:/Users/Fernando/Documents/Material/Coursera/DataScience/Reproducible_Research")
 act <- read.csv("activity.csv", header=TRUE)
 ```
@@ -67,7 +67,7 @@ act$date <- as.Date(act$date,"%Y-%m-%d")
 
 We ignore nulls using `is.na()` function as follows.
 
-```{r}
+```{r, echo = TRUE}
 rmna <- !is.na(act$steps)
 act1 <- act[rmna,]
 ```
@@ -75,20 +75,20 @@ act1 <- act[rmna,]
 
 To answer above questions, we manipulate data using `dplyr` library. First, we calculate the total number of steps taken per day using `summarize()`, and store the results in a new data frame called `act_stat`
 
-```{r}
+```{r, echo = TRUE}
 library(dplyr)
 act_stat <- act1 %>% group_by(date) %>% summarize(sum=sum(steps))
 ```
 Whit this new data, we generate the histogram
 
-```{r}
+```{r, echo = TRUE}
 hist(act_stat$sum, nclass=15, col="lightskyblue", main="Total number of steps per day", xlab="Total number of steps per day")
 rug(act_stat$sum)
 ```
 
 Now, we calculate the mean and median of the total number of steps per day.
 
-```{r}
+```{r, echo = TRUE}
 mean(act_stat$sum)
 median(act_stat$sum)
 ```
@@ -100,14 +100,14 @@ median(act_stat$sum)
  2. *Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?*
 
 Firts question will be aswered by calculate a new summary table
-```{r}
+```{r, echo = TRUE}
 act_stat_mean <- act1 %>% group_by(interval) %>% summarize(mean=mean(steps))
 plot(act_stat_mean$interval, act_stat_mean$mean, type="l", col="darkblue", lwd=2)
 ```
 
 The maximun number of step is calculated as follow:
 
-```{r}
+```{r, echo = TRUE}
 act_stat_mean[which.max(act_stat_mean$mean),]
 
 ```
@@ -123,13 +123,13 @@ act_stat_mean[which.max(act_stat_mean$mean),]
  4. *Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?*
 
 We return using `act` data frame. The number of missing values are:
-```{r}
+```{r, echo = TRUE}
 sum(is.na(act$steps))
 ```
 
 Impute data will be made using the mean for each 5-minute interval. I did this by creating a summary table that contains the mean and merge this results with the original data.
 
-```{r}
+```{r, echo = TRUE}
 act_stat1 <- act1 %>% group_by(interval) %>% summarize(imput=round(mean(steps)))
 act_mer <- merge(act, act_stat1, by="interval")
 act_mer <- act_mer[order(act_mer$date,act_mer$interval),]
@@ -137,13 +137,13 @@ act_mer <- act_mer[order(act_mer$date,act_mer$interval),]
 
 Finally we impute the data by replacing those for which data is NA according to the interval variable. The second line reorder the data.
 
-```{r}
+```{r, echo = TRUE}
 act_imp <- data.frame(date=act_mer$date, interval=act_mer$interval, steps=ifelse(is.na(act$steps), act_mer$imput, act_mer$steps ))
 
 ```
 
 The new data `act_imp` contains no more NA's! Using this data, we plot a new histogram and calculate the mean and median.
-```{r}
+```{r, echo = TRUE}
 act_imp_sum <- act_imp %>% group_by(date) %>% summarize(sum=sum(steps))
 hist(act_imp_sum$sum, nclass=15, col="lightskyblue",  main="Total number of steps per day", xlab="Total number of steps per day")
 rug(act_imp_sum$sum)
@@ -152,7 +152,7 @@ rug(act_imp_sum$sum)
 
 Finally, we calculate the mean and median of the data with imputed data
 
-```{r}
+```{r, echo = TRUE}
 mean(act_imp_sum$sum)
 median(act_imp_sum$sum)
 
@@ -169,7 +169,7 @@ Threre is not a significal change in the mean of the totla step per day, just a 
 
 First, we create the variable wd, which represents the level required.
 
-```{r}
+```{r, echo = TRUE}
 act_wd <- ifelse(weekdays(act_imp$date)=="sábado" | weekdays(act_imp$date)=="domingo" ,"Weekend","Weekday")
 act_imp_wd <- data.frame(date=act_imp$date, interval=act_imp$interval, steps=act_imp$steps, wd=act_wd)
 act_imp_wd$wd <- factor(act_imp_wd$wd)
@@ -177,13 +177,13 @@ act_imp_wd$wd <- factor(act_imp_wd$wd)
 ```
 Using this new variable, we creat a summary data.
 
-```{r}
+```{r, echo = TRUE}
 act_wd_sm <- act_imp_wd %>% group_by(interval, wd) %>% summarize(sum=sum(steps))
 
 ```
 In the last step, create the plot using `lattice` package.
 
-```{r}
+```{r, echo = TRUE}
 library(lattice)
 xyplot(sum ~ interval | wd, act_wd_sm, type = "l", layout = c(1, 2), xlab = "Interval", ylab = "Number of steps")
 
